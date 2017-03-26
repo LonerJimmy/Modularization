@@ -9,13 +9,13 @@ import com.loner.annotation.Provider;
  * Created by loner on 2017/3/23.
  */
 
-@Provider("demo")
+@Provider("loner")
 public class DemoUtil {
 
     @Action("isBlank")
-    public boolean isBlank(String s) {
+    public String isBlank(String s) {
         Log.e("loner", "Demo util is or not blank");
-        return s == null || s.length() == 0;
+        return s+"loner maindemo hello";
     }
 
 }

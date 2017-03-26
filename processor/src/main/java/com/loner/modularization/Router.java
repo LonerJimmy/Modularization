@@ -1,6 +1,8 @@
-package com.example.modularization;
+package com.loner.modularization;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by loner on 2017/3/23.
@@ -9,6 +11,7 @@ import java.util.HashMap;
 public class Router {
 
     private static Router sInstance = null;
+    private static List<String> aptPackages;
     private static HashMap<String, Provider> mRegisterProvideMap;
 
     public static synchronized Router getInstance() {
@@ -20,6 +23,7 @@ public class Router {
 
     private Router() {
         mRegisterProvideMap = new HashMap<>();
+        aptPackages = new ArrayList<>();
     }
 
     /**
@@ -41,7 +45,19 @@ public class Router {
         mRegisterProvideMap.put(provider.getProviderName(), provider);
     }
 
-    public static HashMap<String, Provider> getmRegisterProvideMap() {
+    public void addPackageName(String i) {
+        aptPackages.add(i);
+    }
+
+    public void clearPackageName() {
+        aptPackages.clear();
+    }
+
+    public List<String> getAptPackages() {
+        return aptPackages;
+    }
+
+    public HashMap<String, Provider> getmRegisterProvideMap() {
         return mRegisterProvideMap;
     }
 

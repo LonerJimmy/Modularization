@@ -1,4 +1,4 @@
-package loner.maindemo;
+package loner.maindemo.demo;
 
 import android.util.Log;
 
@@ -6,16 +6,16 @@ import com.loner.annotation.Action;
 import com.loner.annotation.Provider;
 
 /**
- * Created by loner on 2017/3/23.
+ * Created by loner on 2017/3/26.
  */
 
-@Provider("demo")
+@Provider("demo2")
 public class DemoUtil {
 
-    @Action("isBlank")
-    public boolean isBlank(String s) {
+    @Action("isBlank2")
+    public String isBlank2(String s) {
         Log.e("loner", "Demo util is or not blank");
-        return s == null || s.length() == 0;
+        return s + "pp";
     }
 
 }

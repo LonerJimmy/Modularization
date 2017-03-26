@@ -1,4 +1,4 @@
-package com.example.modularization;
+package com.loner.modularization;
 
 import java.util.HashMap;
 
@@ -10,7 +10,6 @@ public class Provider {
 
     private String providerName;
     private HashMap<String, Action> actions;
-    private String packageName;
 
     public Provider() {
         actions = new HashMap<>();
@@ -38,15 +37,8 @@ public class Provider {
         this.providerName = providerName;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
     public String getProviderName() {
         return providerName;
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
 }

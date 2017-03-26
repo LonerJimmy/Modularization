@@ -1,17 +1,25 @@
 package loner.modularizationtest;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
-import com.example.modularization.Router;
+import com.loner.reflect.InitModularization;
 
 public class MainActivity extends AppCompatActivity {
+
+    private TextView helloTextView;
+    private String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Router.getInstance().getProvider("loner").getActions().get("demo");
+        helloTextView = (TextView) findViewById(R.id.hello);
+
+        msg = String.valueOf(InitModularization.excute("loner", "isBlank2", String.class));
+
+        helloTextView.setText(msg);
     }
 }
