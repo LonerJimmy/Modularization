@@ -1,4 +1,4 @@
-package loner.maindemo;
+package loner.mainmodule;
 
 import android.util.Log;
 

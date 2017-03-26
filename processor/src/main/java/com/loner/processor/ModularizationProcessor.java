@@ -21,7 +21,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 @AutoService(Processor.class)
@@ -54,42 +53,42 @@ public class ModularizationProcessor extends AbstractProcessor {
         }
         JavaFileObject javaFileObject = null;
         try {
-            javaFileObject = filer.createSourceFile("com.loner.Modularization");
-
-            Writer writer = javaFileObject.openWriter();
-            writer.write("package com.loner;\n\n");
-
-            writer.write(String.format("public final class %s {\n", "Modularization"));
-            writer.write("public void register() {\n");
-
-            int i = 0;
 
             for (Element element : elements) {
 
-                String provider = "provider" + i;
-                String packageClassName = ProcessorUtil.getPackageClassName(element);
+                String provider = "provider";
                 TypeElement typeElement = ProcessorUtil.getTypeElement(element);
                 String providerValue = typeElement.getAnnotation(Provider.class).value();
-
+                String packageClassName = "com.loner.register." + providerValue + "Modularization";
+                String packageName = "com.loner.register";
+                String className = providerValue + "Modularization";
                 List<? extends Element> members = elementUtils.getAllMembers(typeElement);
 
-                writer.write(String.format("com.loner.modularization.Provider %s = new com.loner.modularization.Provider();\n", provider));
-                writer.write(String.format("%s.setProviderName(\"%s\");\n", provider, providerValue));
+                javaFileObject = filer.createSourceFile(packageClassName);
+
+                Writer writer = javaFileObject.openWriter();
+                writer.write("package " + packageName + ";\n\n");
+
+                writer.write(String.format("public class %s{\n", className));
+                writer.write("    public static void register() {\n");
+
+                writer.write(String.format("        com.loner.modularization.Provider %s = new com.loner.modularization.Provider();\n", provider));
+                writer.write(String.format("        %s.setProviderName(\"%s\");\n", provider, providerValue));
 
                 for (Element item : members) {
                     Action action = item.getAnnotation(Action.class);
                     if (action != null) {
-                        writer.write(String.format("%s.registerAction(new com.loner.modularization.Action(\"%s\",\"%s\",\"%s\"));\n", provider, action.value(), ProcessorUtil.getMethodName(item), packageClassName));
+                        writer.write(String.format("        %s.registerAction(new com.loner.modularization.Action(\"%s\",\"%s\",\"%s\"));\n", provider, action.value(), ProcessorUtil.getMethodName(item), ProcessorUtil.getPackageClassName(element)));
                     }
                 }
 
-                writer.write(String.format("com.loner.modularization.Router.getInstance().registerProvider(%s);\n\n", provider));
+                writer.write(String.format("        com.loner.modularization.Router.getInstance().registerProvider(%s);\n\n", provider));
 
-                i++;
+                writer.write("      }\n" + "}");
+                writer.close();
+
             }
 
-            writer.write("  }\n" + "}");
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ import com.loner.reflect.InitModularization;
 public class MainActivity extends AppCompatActivity {
 
     private TextView helloTextView;
-    private String msg;
+    private boolean msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
         helloTextView = (TextView) findViewById(R.id.hello);
 
-        msg = String.valueOf(InitModularization.excute("loner", "isBlank2", String.class));
+        msg = (boolean) (InitModularization.excute("demo", "isBlank", String.class));
 
-        helloTextView.setText(msg);
+        helloTextView.setText(msg + "");
     }
 }
