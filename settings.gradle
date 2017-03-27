@@ -1,1 +1,1 @@
-include ':app', ':maindemo', ':processor','mainmodule'
+include ':app', ':maindemo', ':processor', ':modularization', 'mainmodule'

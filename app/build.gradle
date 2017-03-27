@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     compile project(path: ':maindemo')
     compile project(path: ':mainmodule')
+    compile project(path: ':modularization')
 }

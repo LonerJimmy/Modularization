@@ -1,29 +1,41 @@
-package com.loner.reflect;
+package loner.modularization;
+
+import android.app.Activity;
 
 import com.loner.modularization.Action;
 import com.loner.modularization.Router;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by loner on 2017/3/26.
  */
 
-public class InitModularization {
+public class Modularization {
 
-    public static void init() {
+    public static void init(Activity activity) {
+        init(activity.getClass());
+    }
 
+    public static void init(Class c) {
+        init(c.getSimpleName());
+    }
+
+    public static void init(String provider) {
         try {
-            Class<?> threadClazz = Class.forName("com.loner.Modularization");
-            Method[] methods = threadClazz.getDeclaredMethods();
-            List<String> names = new ArrayList<>();
-            for (int i = 0; i < methods.length; i++) {
-                names.add(methods[i].getName());
-            }
+            Class injectorClazz = Class.forName("com.loner.register." + provider + "Modularization");
+            Method method = injectorClazz.getDeclaredMethod("register");
+            method.invoke(injectorClazz.newInstance());
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
     }

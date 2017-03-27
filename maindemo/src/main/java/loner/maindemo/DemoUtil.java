@@ -5,6 +5,8 @@ import android.util.Log;
 import com.loner.annotation.Action;
 import com.loner.annotation.Provider;
 
+import loner.modularization.Modularization;
+
 /**
  * Created by loner on 2017/3/23.
  */
@@ -12,8 +14,11 @@ import com.loner.annotation.Provider;
 @Provider("demo")
 public class DemoUtil {
 
+    public DemoUtil() {
+    }
+
     @Action("isBlank")
-    public boolean isBlank(String s) {
+    public boolean isBlankOrNot(String s) {
         Log.e("loner", "Demo util is or not blank");
         return s == null || s.length() == 0;
     }
