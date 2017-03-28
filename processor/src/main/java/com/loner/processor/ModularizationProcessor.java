@@ -51,8 +51,20 @@ public class ModularizationProcessor extends AbstractProcessor {
         if (elements.isEmpty()) {
             return false;
         }
-        JavaFileObject javaFileObject = null;
+        JavaFileObject javaFileObject;
+        JavaFileObject initFileObject;
         try {
+
+            initFileObject = filer.createSourceFile("com.loner.Modularization");
+            Writer writerInit = initFileObject.openWriter();
+            writerInit.write("package com.loner;\n\n");
+            writerInit.write("import java.lang.reflect.Method;\n");
+            writerInit.write("import java.lang.reflect.InvocationTargetException;\n\n");
+            writerInit.write("public class Modularization{\n");
+            writerInit.write("public static void init(){\n");
+            writerInit.write("Class injectorClazz;\n");
+            writerInit.write("Method method;\n\n");
+            writerInit.write("try {\n");
 
             for (Element element : elements) {
 
@@ -63,6 +75,10 @@ public class ModularizationProcessor extends AbstractProcessor {
                 String packageName = "com.loner.register";
                 String className = providerValue + "Modularization";
                 List<? extends Element> members = elementUtils.getAllMembers(typeElement);
+
+                writerInit.write(String.format("injectorClazz = Class.forName(\"%s\");\n", packageClassName));
+                writerInit.write("method = injectorClazz.getDeclaredMethod(\"register\");\n");
+                writerInit.write("method.invoke(injectorClazz.newInstance());\n\n");
 
                 javaFileObject = filer.createSourceFile(packageClassName);
 
@@ -88,6 +104,20 @@ public class ModularizationProcessor extends AbstractProcessor {
                 writer.close();
 
             }
+
+            writerInit.write("} catch (ClassNotFoundException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        } catch (IllegalAccessException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        } catch (InstantiationException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        } catch (InvocationTargetException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        } catch (NoSuchMethodException e) {\n" +
+                    "            e.printStackTrace();\n" +
+                    "        }");
+            writerInit.write("      }\n" + "}");
+            writerInit.close();
 
         } catch (IOException e) {
             e.printStackTrace();
