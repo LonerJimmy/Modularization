@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -29,6 +30,7 @@ public class ModularizationProcessor extends AbstractProcessor {
     private Elements elementUtils;
     private Filer filer;
     private Messager messager;
+    private String targetModuleName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -36,6 +38,14 @@ public class ModularizationProcessor extends AbstractProcessor {
         elementUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
         messager = processingEnv.getMessager();
+
+        Map<String, String> map = processingEnv.getOptions();
+        Set<String> keys = map.keySet();
+        for (String key : keys) {
+            if ("targetModuleName".equals(key)) {
+                this.targetModuleName = map.get(key);
+            }
+        }
     }
 
     @Override
@@ -52,41 +62,28 @@ public class ModularizationProcessor extends AbstractProcessor {
             return false;
         }
         JavaFileObject javaFileObject;
-        JavaFileObject initFileObject;
+
+        if (targetModuleName == null || targetModuleName.length() == 0) {
+            targetModuleName = "apt";
+        }
+
         try {
 
-            initFileObject = filer.createSourceFile("com.loner.Modularization");
-            Writer writerInit = initFileObject.openWriter();
-            writerInit.write("package com.loner;\n\n");
-            writerInit.write("import java.lang.reflect.Method;\n");
-            writerInit.write("import java.lang.reflect.InvocationTargetException;\n\n");
-            writerInit.write("public class Modularization{\n");
-            writerInit.write("public static void init(){\n");
-            writerInit.write("Class injectorClazz;\n");
-            writerInit.write("Method method;\n\n");
-            writerInit.write("try {\n");
+            javaFileObject = filer.createSourceFile(String.format("com.loner.%sModularization", targetModuleName));
+            Writer writer = javaFileObject.openWriter();
+            writer.write("package com.loner;\n\n");
+
+            writer.write(String.format("public class %sModularization{\n", targetModuleName));
+            writer.write("    public static void register() {\n");
+
+            int i = 0;
 
             for (Element element : elements) {
 
-                String provider = "provider";
+                String provider = "provider"+i;
                 TypeElement typeElement = ProcessorUtil.getTypeElement(element);
                 String providerValue = typeElement.getAnnotation(Provider.class).value();
-                String packageClassName = "com.loner.register." + providerValue + "Modularization";
-                String packageName = "com.loner.register";
-                String className = providerValue + "Modularization";
                 List<? extends Element> members = elementUtils.getAllMembers(typeElement);
-
-                writerInit.write(String.format("injectorClazz = Class.forName(\"%s\");\n", packageClassName));
-                writerInit.write("method = injectorClazz.getDeclaredMethod(\"register\");\n");
-                writerInit.write("method.invoke(injectorClazz.newInstance());\n\n");
-
-                javaFileObject = filer.createSourceFile(packageClassName);
-
-                Writer writer = javaFileObject.openWriter();
-                writer.write("package " + packageName + ";\n\n");
-
-                writer.write(String.format("public class %s{\n", className));
-                writer.write("    public static void register() {\n");
 
                 writer.write(String.format("        com.loner.modularization.Provider %s = new com.loner.modularization.Provider();\n", provider));
                 writer.write(String.format("        %s.setProviderName(\"%s\");\n", provider, providerValue));
@@ -100,24 +97,11 @@ public class ModularizationProcessor extends AbstractProcessor {
 
                 writer.write(String.format("        com.loner.modularization.Router.getInstance().registerProvider(%s);\n\n", provider));
 
-                writer.write("      }\n" + "}");
-                writer.close();
-
+                i++;
             }
 
-            writerInit.write("} catch (ClassNotFoundException e) {\n" +
-                    "            e.printStackTrace();\n" +
-                    "        } catch (IllegalAccessException e) {\n" +
-                    "            e.printStackTrace();\n" +
-                    "        } catch (InstantiationException e) {\n" +
-                    "            e.printStackTrace();\n" +
-                    "        } catch (InvocationTargetException e) {\n" +
-                    "            e.printStackTrace();\n" +
-                    "        } catch (NoSuchMethodException e) {\n" +
-                    "            e.printStackTrace();\n" +
-                    "        }");
-            writerInit.write("      }\n" + "}");
-            writerInit.close();
+            writer.write("      }\n" + "}");
+            writer.close();
 
         } catch (IOException e) {
             e.printStackTrace();

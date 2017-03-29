@@ -1,7 +1,7 @@
 package loner.modularizationtest;
 
 
-import com.loner.Modularization;
+import loner.modularization.Modularization;
 
 /**
  * Created by loner on 2017/3/23.
@@ -13,7 +13,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
-        Modularization.init();
+        Modularization.init("MainDemo","MainModule");
 //        demo2Modularization.register();
 //        demo3Modularization.register();
 //        demoModularization.register();

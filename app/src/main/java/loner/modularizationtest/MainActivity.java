@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
         helloTextView = (TextView) findViewById(R.id.hello);
 
-        msg = (String) (Modularization.excute("loner", "isBlank", String.class));
-
-        helloTextView.setText(msg + "");
+        Modularization.excute("demo3", "isBlank3", String.class);
     }
 }
