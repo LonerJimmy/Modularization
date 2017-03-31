@@ -25,6 +25,12 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     compile project(path: ':processor')
 
-    apt project(':processor')
     compile project(path: ':modularization')
+    apt project(':processor')
+}
+
+apt {
+    arguments {
+        targetModuleName 'MainDemo'
+    }
 }

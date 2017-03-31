@@ -1,5 +1,6 @@
 package loner.modularizationtest;
 
+
 import loner.modularization.Modularization;
 
 /**
@@ -12,6 +13,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
 
+        Modularization.init("MainDemo","MainModule");
 //        demo2Modularization.register();
 //        demo3Modularization.register();
 //        demoModularization.register();

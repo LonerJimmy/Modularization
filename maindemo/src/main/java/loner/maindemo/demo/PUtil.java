@@ -18,9 +18,8 @@ public class PUtil {
     }
 
     @Action("isBlank3")
-    public String isBlank3(String s) {
+    public void isBlank3(String s) {
         Log.e("loner", "Demo util is or not blank");
-        return s + " hello loner";
     }
 
 }

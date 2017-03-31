@@ -25,3 +25,9 @@ dependencies {
     compile project(path: ':processor')
     apt project(':processor')
 }
+
+apt {
+    arguments {
+        targetModuleName 'MainModule'
+    }
+}

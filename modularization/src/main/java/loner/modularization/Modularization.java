@@ -22,11 +22,14 @@ public class Modularization {
         init(c.getSimpleName());
     }
 
-    public static void init(String provider) {
+    public static void init(String... providers) {
         try {
-            Class injectorClazz = Class.forName("com.loner.register." + provider + "Modularization");
-            Method method = injectorClazz.getDeclaredMethod("register");
-            method.invoke(injectorClazz.newInstance());
+            for (String provider : providers) {
+                Class injectorClazz = Class.forName("com.loner." + provider + "Modularization");
+                Method method = injectorClazz.getDeclaredMethod("register");
+                method.invoke(injectorClazz.newInstance());
+            }
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
